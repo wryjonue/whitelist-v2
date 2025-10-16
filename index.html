@@ -1,0 +1,146 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NightShifts SMP Apply</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #111;
+      color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    form {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 5px;
+      color: #0ff;
+    }
+    p:first-of-type {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #fff;
+      font-family: monospace;
+    }
+    input[type="text"] {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+    }
+
+    input[type="checkbox"] {
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      outline: none;
+    }
+
+    label {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #0ff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #000;
+    }
+
+    p.rules {
+      font-size: 13px;
+      color: #aaa;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <form id="submitForm">
+    <h2>NightShifts SMP</h2>
+    <p>Address: <b>potato.minecraft.pe</b> | Port: <b>25755</b></p>
+    <input type="text" id="gamertag" name="gamertag" placeholder="Minecraft Gamertag" required="">
+
+    <input type="text" id="discord" name="discord" placeholder="Discord Username" required="">
+
+    <label>
+      <input type="checkbox" id="agree" required="">
+      Do you agree to the rules of our server?
+    </label>
+
+    <button type="submit">Submit</button>
+
+    <p class="rules">
+      <strong>Rules of the Server:</strong><br>
+      - No unauthorized killing<br>
+      - No griefing<br>
+      - No cheating or exploits<br>
+      - Be respectful to others<br>
+      - No spamming<br>
+      - Breaking rules will result in a permanent ban
+    </p>
+  </form>
+
+  <script>
+    document.getElementById('submitForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const gamertag = document.getElementById('gamertag').value.trim();
+      const discord = document.getElementById('discord').value.trim();
+      const agreed = document.getElementById('agree').checked;
+
+      if (!gamertag || !agreed) {
+        alert("Please fill all required fields and agree to the rules.");
+        return;
+      }
+      let sessionID = localStorage.getItem('nightshifts_id');
+      if (!sessionID) {
+        sessionID = `${Date.now()}-${Math.floor(Math.random() * 100000)}`;
+        localStorage.setItem('nightshifts_id', sessionID);
+      }
+
+      try {
+        await fetch('/whitelist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ gamertag, discord, sessionID })
+        });
+        alert('Submitted! You will be reviewed shortly.');
+        document.getElementById('submitForm').reset();
+        window.location.href = 'https://discord.gg/4QxQqmJpFw';
+      } catch (err) {
+        alert('Failed to submit. Please try again later.');
+        console.error(err);
+      }
+    });
+  </script>
+
+
+</body></html>
